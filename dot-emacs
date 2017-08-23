@@ -1,0 +1,220 @@
+;; load path
+(add-to-list 'load-path "~/.emacs.d/elpa" t)
+(add-to-list 'load-path "~/.emacs.d/packages" t)
+
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+;; easy install new packages
+(require 'package)
+(package-initialize)
+
+(require 'linum)
+(require 'column-marker)
+(require 'go-mode-load)
+(require 'pbcopy)
+
+;; color stuff
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(load-theme 'zenburn t)
+
+;; make all yes no prompts b y or n instead
+(defalias 'yes-or-no-p 'y-or-n-p) 
+
+
+;; set text as default major mode
+(setq-default major-mode 'text-mode)
+
+;; put the scroll bar on the right, why would default be left?!
+(menu-bar-right-scroll-bar)
+
+;; turn word wrap off... it makes sql look ugl-y
+(toggle-truncate-lines)
+
+;; set smooth scrolling
+(setq scroll-conservatively 10000)
+
+;; ido typing completions
+(ido-mode)
+
+;; paren matching
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+(setq blink-matching-paren t)
+
+;; Show line numbers on left side of buffer
+(setq linum-format "%d ")
+(global-linum-mode 1)
+
+;; column stuff
+;; show column-number on bottom of buffer
+(column-number-mode)
+;; highlight 79th column on python buffers
+(add-hook 'python-mode-hook (lambda () (interactive) (column-marker-1 79)))
+; (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-2 120)))
+
+;; auto set buffer mode for extensions
+(add-to-list 'auto-mode-alist '("\\.pyx$" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.update$" . conf-mode))
+(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+(add-to-list 'auto-mode-alist '("\\.less" . css-mode))
+(add-to-list 'auto-mode-alist '("\\.pjs$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.ddl$" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.sql$" . sql-mode))
+
+;; Attempt to find-file-at-point on cursor when doing C-x C-f
+(ffap-bindings) ; ffap=find-file-at-point
+
+;; turn off the menu bar (who uses that thing anyway!?)
+(menu-bar-mode -1)
+
+;; show time in toolbar
+(setq display-time-day-and-date t display-time-24hr-format t)
+(display-time)
+
+;; custom key shortcuts
+;; switching windows
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+
+;; killing things
+(global-set-key (kbd "C-x <kp-0>") 'delete-window)
+(global-set-key (kbd "C-x <kp-1>") 'delete-other-windows)
+(global-set-key (kbd "C-<kp-delete>") 'kill-word)
+(global-set-key (kbd "C-<deletechar>") 'kill-word)
+
+;; home and end keys
+(global-set-key [home] 'beginning-of-line)
+(global-set-key [end] 'end-of-line)
+
+;; revert buffer
+(global-set-key (kbd "C-c r") 'revert-buffer)
+
+;; custom key aliases
+(defalias 'rb 'rename-buffer)
+(defalias 'ttl 'toggle-truncate-lines)
+(defalias 'ww 'toggle-truncate-lines) ;; word-wrap
+(defalias 'cr 'comment-region)
+(defalias 'uc 'uncomment-region)
+(defalias 'gt 'goto-line)
+(defalias 'gl 'goto-line)
+(defalias 'g 'goto-line)
+(defalias 'ow 'overwrite-mode)
+
+
+;; tabs insert spaces, not tabs
+(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
+
+;;sql variables
+(setq sql-mysql-options (list "--local-infile"))
+
+;; enable inter program cut and paste
+(turn-on-pbcopy)
+
+;; un-disable things
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; restore desktop on startup
+(desktop-save-mode 1)
+(add-to-list 'desktop-path "~/.emacs.d/desktops/")
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;; easy startup for psql
+;;
+(setq sql-postgres-program "/usr/local/bin/psql")
+
+;; feel free to change these values, but don't commit...
+;; maybe set these somewhere else in a file not tracked by git
+(setq sql-connection-alist
+'((local
+   (sql-product 'postgres)
+   (sql-server "local-servername")
+   (sql-user "username")
+   (sql-password "password")
+   (sql-database "db")
+  )
+  (staging
+   (sql-product 'postgres)
+   (sql-server "staging-servername")
+   (sql-user "username")
+   (sql-password "password")
+   (sql-database "db")
+  )
+ )
+)
+
+(defun sql-local ()
+(interactive)
+(sql-connect-preset 'local))
+
+(defun sql-staging ()
+(interactive)
+(sql-connect-preset 'staging))
+
+;; Three quarter-size-ify a window
+(defun three-quarters-window ()
+  "Resizes current window big"
+  (interactive)
+  (let ((size (- (truncate (* .75 (frame-height))) (window-height))))
+    (if (> size 0)
+        (enlarge-window size))))
+(global-set-key "\C-x7" 'three-quarters-window)
+
+;; Game Scores
+(setq tetris-score-file "~/.emacs.d/tetris-scores")
+(setq snake-score-file "~/.emacs.d/snake-scores")
+
+;; boot up some shells
+(shell "*sh1*")
+(shell "*sh2*")
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("253da655df80875fa5f2e1a4acc8a53cd62231574dcb0be3f26e637b5b59a7d5" default)))
+ '(fci-rule-color "#1B1B1B")
+ '(package-selected-packages
+   (quote
+    (markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
+ '(scroll-bar-mode (quote right) t)
+ '(vc-annotate-background "#0B0B0B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
