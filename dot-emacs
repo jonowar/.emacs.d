@@ -104,6 +104,24 @@
 (defalias 'g 'goto-line)
 (defalias 'ow 'overwrite-mode)
 
+;; insert/comment/uncomment pdb breakpoints
+;; these were defined by:
+;; 1) start a macro: C-x (
+;; 2) do some sequence of commands
+;; 3) end the macro: C-x )
+;; 4) give the macro a name: C-x C-k n <name>
+;; 5) print the elisp for the macro: M-x insert-kbd-macro
+(fset 'comment-breakpoints
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("xgoto line0xreplace stringimport ipdb# import ipdb" 0 "%d")) arg)))
+(global-set-key (kbd "C-c c") 'comment-breakpoints)
+
+(fset 'uncomment-breakpoints
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("xgoto line0xreplace string# import ipdbimport ipdb" 0 "%d")) arg)))
+(global-set-key (kbd "C-c u") 'uncomment-breakpoints)
+
+(fset 'insert-breakpoint
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("import ipdb; ipdb.set_trace()" 0 "%d")) arg)))
+(global-set-key (kbd "C-c C-b") 'insert-breakpoint)
 
 ;; tabs insert spaces, not tabs
 (setq indent-tabs-mode nil)
