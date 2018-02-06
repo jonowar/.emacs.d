@@ -55,13 +55,26 @@
 ; (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-2 120)))
 
 ;; auto set buffer mode for extensions
-(add-to-list 'auto-mode-alist '("\\.pyx$" . python-mode))
-(add-to-list 'auto-mode-alist '("\\.update$" . conf-mode))
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
+(add-to-list 'auto-mode-alist '("\\.ddl$" . sql-mode))
 (add-to-list 'auto-mode-alist '("\\.less" . css-mode))
 (add-to-list 'auto-mode-alist '("\\.pjs$" . javascript-mode))
-(add-to-list 'auto-mode-alist '("\\.ddl$" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.pyx$" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sql$" . sql-mode))
+(add-to-list 'auto-mode-alist '("\\.toml$" . toml-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.update$" . conf-mode))
+(add-to-list 'auto-mode-alist '("\\.vcl$" . vcl-mode))
+
+;; set up multi-web-mode for editing html files with different languages inside
+(require 'multi-web-mode)
+(setq mweb-default-major-mode 'html-mode)
+(setq mweb-tags
+  '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+    (js-mode  "<script[^>]*>" "</script>")
+    (css-mode "<style[^>]*>" "</style>")))
+(setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+(multi-web-global-mode 1)
 
 ;; Attempt to find-file-at-point on cursor when doing C-x C-f
 (ffap-bindings) ; ffap=find-file-at-point
@@ -192,8 +205,8 @@
 (setq snake-score-file "~/.emacs.d/snake-scores")
 
 ;; boot up some shells
-(shell "*sh1*")
-(shell "*sh2*")
+;; (shell "*sh1*")
+;; (shell "*sh2*")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -206,7 +219,7 @@
  '(fci-rule-color "#1B1B1B")
  '(package-selected-packages
    (quote
-    (markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
+    (toml-mode vcl-mode multi-web-mode jsx-mode typescript-mode markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
  '(scroll-bar-mode (quote right) t)
  '(vc-annotate-background "#0B0B0B")
  '(vc-annotate-color-map
