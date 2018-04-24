@@ -36,7 +36,10 @@
 (setq scroll-conservatively 10000)
 
 ;; ido typing completions
-(ido-mode)
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+(ido-vertical-mode 1)
 
 ;; paren matching
 (show-paren-mode 1)
@@ -140,6 +143,11 @@
 (setq indent-tabs-mode nil)
 (setq-default indent-tabs-mode nil)
 
+;; indent-guide
+;; (require 'indent-guide)
+;; (indent-guide-global-mode)
+;; (set-face-background 'indent-guide-face "dimgray")
+
 ;;sql variables
 (setq sql-mysql-options (list "--local-infile"))
 
@@ -217,10 +225,14 @@
    (quote
     ("253da655df80875fa5f2e1a4acc8a53cd62231574dcb0be3f26e637b5b59a7d5" default)))
  '(fci-rule-color "#1B1B1B")
+ '(js-indent-level 2)
+ '(mweb-submode-indent-offset 2)
  '(package-selected-packages
    (quote
-    (toml-mode vcl-mode multi-web-mode jsx-mode typescript-mode markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
+    (ido-vertical-mode tide toml-mode vcl-mode multi-web-mode jsx-mode typescript-mode markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
+ '(python-indent-guess-indent-offset t)
  '(scroll-bar-mode (quote right) t)
+ '(typescript-indent-level 2)
  '(vc-annotate-background "#0B0B0B")
  '(vc-annotate-color-map
    (quote
@@ -242,7 +254,8 @@
      (320 . "#8CD0D3")
      (340 . "#94BFF3")
      (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
+ '(vc-annotate-very-old-color "#DC8CC3")
+ '(sort-fold-case t t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
