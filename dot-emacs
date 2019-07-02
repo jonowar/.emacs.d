@@ -22,6 +22,8 @@
 ;; make all yes no prompts b y or n instead
 (defalias 'yes-or-no-p 'y-or-n-p) 
 
+;; allow using the mouse for clicking/highlighting
+(xterm-mouse-mode)
 
 ;; set text as default major mode
 (setq-default major-mode 'text-mode)
@@ -54,7 +56,7 @@
 ;; show column-number on bottom of buffer
 (column-number-mode)
 ;; highlight 79th column on python buffers
-(add-hook 'python-mode-hook (lambda () (interactive) (column-marker-1 79)))
+(add-hook 'python-mode-hook (lambda () (interactive) (column-marker-1 99)))
 ; (add-hook 'python-mode-hook (lambda () (interactive) (column-marker-2 120)))
 
 ;; auto set buffer mode for extensions
@@ -68,6 +70,7 @@
 (add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
 (add-to-list 'auto-mode-alist '("\\.update$" . conf-mode))
 (add-to-list 'auto-mode-alist '("\\.vcl$" . vcl-mode))
+(add-to-list 'auto-mode-alist '("\\.pp" . puppet-mode))
 
 ;; set up multi-web-mode for editing html files with different languages inside
 (require 'multi-web-mode)
@@ -135,11 +138,11 @@
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("xgoto line0xreplace string# import ipdbimport ipdb" 0 "%d")) arg)))
 (global-set-key (kbd "C-c u") 'uncomment-breakpoints)
 
-(fset 'insert-breakpoint
-   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("import ipdb; ipdb.set_trace()" 0 "%d")) arg)))
-(global-set-key (kbd "C-c C-b") 'insert-breakpoint)
+(defun insert-ipdb-debug ()
+  (insert "from pprint import pprint as pp; import ipdb; ipdb.set_trace()"))
+(global-set-key (kbd "C-c C-b") (lambda () (interactive) (insert-ipdb-debug)))
 
-;; tabs insert spaces, not tabs
+;; self.tabs insert spaces, not tabs = tabs insert spaces, not tabs
 (setq indent-tabs-mode nil)
 (setq-default indent-tabs-mode nil)
 
@@ -229,9 +232,10 @@
  '(mweb-submode-indent-offset 2)
  '(package-selected-packages
    (quote
-    (ido-vertical-mode tide toml-mode vcl-mode multi-web-mode jsx-mode typescript-mode markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
+    (dockerfile-mode groovy-mode yaml-mode puppet-mode yasnippet elpy json-mode graphql-mode ido-vertical-mode tide toml-mode vcl-mode multi-web-mode jsx-mode typescript-mode markdown-mode thrift pep8 ipython mmm-mako ini-mode zenburn-theme rainbow-mode rainbow-delimiters python-mode pbcopy cider)))
  '(python-indent-guess-indent-offset t)
- '(scroll-bar-mode (quote right) t)
+ '(scroll-bar-mode (quote right))
+ '(sort-fold-case t)
  '(typescript-indent-level 2)
  '(vc-annotate-background "#0B0B0B")
  '(vc-annotate-color-map
@@ -254,8 +258,7 @@
      (320 . "#8CD0D3")
      (340 . "#94BFF3")
      (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3")
- '(sort-fold-case t t))
+ '(vc-annotate-very-old-color "#DC8CC3"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
