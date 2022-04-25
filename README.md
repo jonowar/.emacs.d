@@ -4,7 +4,7 @@ An attempt to organize my .emacs
 ## Installation
 
 ```bash
-git clone git://github.com/jonowar/.emacs.d.git ~/.emacs.d
+git clone https://github.com/jonowar/.emacs.d.git ~/.emacs.d
 ln -s ~/.emacs.d/dot-emacs .emacs
 mkdir -p ~/.emacs.d/desktops
 ```
